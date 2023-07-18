@@ -1,4 +1,4 @@
-WP Malware Scanner
+<h1>WP Malware Scanner</h1>
 
 A WordPress plugin that can do scans on command by securely sending copies of files to an API endpoint which performs various malware scans.
 
