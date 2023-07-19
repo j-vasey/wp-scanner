@@ -33,6 +33,8 @@ if ($zip->open($extracted_path . '.zip') === true) {
 	$zip->extractTo($extracted_dir);
 	$zip->close();
 	unlink($extracted_path . '.zip');
+	chmod_recursive($extracted_dir, 'clamav','clamav'); // Change permission mode to 0755 (adjust as needed)
+
 } else {
 	header('HTTP/1.1 500 Internal Server Error');
 	die('Failed to unzip the file');
@@ -53,3 +55,28 @@ foreach ($lines as $line) {
 // Send the scan results back as JSON response
 header('Content-Type: application/json');
 echo json_encode(array('scanned_files' => count($scan_results), 'results' => $scan_results));
+
+
+// Check if the file is received
+if (!isset($_FILES['file']) || !is_uploaded_file($_FILES['file']['tmp_name'])) {
+    header('HTTP/1.1 400 Bad Request');
+    die('No file uploaded');
+}
+
+function chmod_recursive($path, $owner, $group) {
+    if (is_dir($path)) {
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($files as $file) {
+            if ($file->isDir()) {
+                chown($file->getPathname(), $owner);
+                chgrp($file->getPathname(), $group);
+            } else {
+                chown($file->getPathname(), $owner);
+                chgrp($file->getPathname(), $group);
+            }
+        }
+    } else {
+        chown($path, $owner);
+        chgrp($path, $group);
+    }
+}
