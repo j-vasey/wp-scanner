@@ -41,7 +41,9 @@ function malware_scanner_page(){
 
 function send_files_to_remote_server() {
 	// Set the remote server's API endpoint URL
-	$api_endpoint = '';
+	$api_endpoint = 'wpapi.joshvasey.co.uk:1337';
+
+	$secret_key = 'testkey';
 
 	// Get the path to the WordPress root directory
 	$root_directory = ABSPATH;
@@ -82,6 +84,7 @@ function send_files_to_remote_server() {
 	curl_setopt($curl, CURLOPT_URL, $api_endpoint);
 	curl_setopt($curl, CURLOPT_POST, true);
 	curl_setopt($curl, CURLOPT_POSTFIELDS, [
+		'secret_key' => $secret_key,
 		'file' => new CURLFile($zip_file),
 	]);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
